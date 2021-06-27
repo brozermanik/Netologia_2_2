@@ -20,7 +20,7 @@ public class DataBase : MonoBehaviour
     #region Effects Data
 
     /// <summary>
-    /// Добавление нового эффекта
+    /// Добавление нового эффекта 
     /// </summary>
     /// <param name="data">Добавляемый эффект</param>
 	public void AddEffect(EffectData data)
