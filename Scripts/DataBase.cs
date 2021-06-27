@@ -11,11 +11,10 @@ public class DataBase : MonoBehaviour
     
     private int m_EffectsCount = 0;
     
-	private Dictionary<int, EffectData> effectsBase = new Dictionary<int, EffectData>();
+    private Dictionary<int, EffectData> effectsBase = new Dictionary<int, EffectData>();
     private Dictionary<int, string> enemiesBase = new Dictionary<int, string>();
     private Dictionary<int, string> equiptmentBase = new Dictionary<int, string>();
     private Dictionary<int, string> inventoryBase = new Dictionary<int, string>();
-    //private List<int> list = new List<>();
 
     #region Effects Data
 
