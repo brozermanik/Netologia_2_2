@@ -9,12 +9,11 @@ public class DataBase : MonoBehaviour
 {
     public const int c_INVENTORY_CAPACITY = 100;
     
-    private int m_EffectsCount = 0;
-    
-    private Dictionary<int, EffectData> effectsBase = new Dictionary<int, EffectData>();
-    private Dictionary<int, string> enemiesBase = new Dictionary<int, string>();
-    private Dictionary<int, string> equiptmentBase = new Dictionary<int, string>();
+    private List<EffectData> effectsBase = new List <EffectData>();
+    private List<EnemyController> enemiesBase = new List<EnemyController>();
     private Dictionary<int, string> inventoryBase = new Dictionary<int, string>();
+
+    private Dictionary<int, string> equiptmentBase = new Dictionary<int, string>();
 
     #region Effects Data
 
@@ -24,8 +23,7 @@ public class DataBase : MonoBehaviour
     /// <param name="data">Добавляемый эффект</param>
 	public void AddEffect(EffectData data)
     {
-	    m_EffectsCount++;
-	    effectsBase.Add(m_EffectsCount, data);
+	    effectsBase.Add(data);
 	}
 
     /// <summary>
@@ -34,9 +32,10 @@ public class DataBase : MonoBehaviour
     /// <param name="data">Удаляемый эффект</param>
     /// <returns>Успешна-ли операция</returns>
     public bool TryToRemoveEffect(EffectData data)
-    {
-	    
-	}
+    { 
+	    var isRemoved = effectsBase.Remove(data);
+	    return isRemoved;
+    }
 
     /// <summary>
     /// Удаление эффектов, наложенных на определенную цель
@@ -44,6 +43,7 @@ public class DataBase : MonoBehaviour
     /// <param name="target">Цель, с которой удаляются все эффекты</param>
     public void RemoveAllEffectOnTarget(Controller target)
     {
+	    effectsBase.RemoveAll( e => e.Target = target);
     }
 
     /// <summary>
@@ -52,6 +52,7 @@ public class DataBase : MonoBehaviour
     /// <param name="source">Источник эффектов</param>
     public void RemoveAllEffectsBySource(Controller source)
     {
+	    effectsBase.RemoveAll( e => e.Source = source);
     }
 
     /// <summary>
@@ -61,7 +62,8 @@ public class DataBase : MonoBehaviour
     /// <returns>Коллекция эффектов</returns>
     public IEnumerable<EffectData> FindAllEffectsOnTarget(Controller target)
     {
-	}
+	    return effectsBase.FindAll(e => e.Target == target);
+    }
 
     /// <summary>
     /// Возвращает все эффекты, которые наложил какой-то источник
@@ -70,15 +72,17 @@ public class DataBase : MonoBehaviour
     /// <returns>Коллекция эффектов</returns>
     public IEnumerable<EffectData> FindAllEffectsBySource(Controller source)
     {
+	    return effectsBase.FindAll(e => e.Source == source);
     }
 
     /// <summary>
     /// Здесь каждый кадр нужно уменьшать время существование всех эффектов,
     /// если длительность эффекта закончилась, то эффект должен удалиться из коллекции
     /// </summary>
+    /// 
     private void Update()
 	{
-    }
+	}
 
 	#endregion
 
@@ -89,6 +93,7 @@ public class DataBase : MonoBehaviour
     /// </summary>
     public void AddEnemy(EnemyController enemy)
     {
+	    enemiesBase.Add(enemy);
 	}
 
     /// <summary>
@@ -96,6 +101,7 @@ public class DataBase : MonoBehaviour
     /// </summary>
     public void RemoveEnemy(EnemyController enemy)
     {
+	    enemiesBase.Remove(enemy);
 	}
 
     /// <summary>
@@ -103,6 +109,7 @@ public class DataBase : MonoBehaviour
     /// </summary>
     public void AddEnemies(IEnumerable<EnemyController> enemies)
     {
+	    enemiesBase.AddRange(enemies);
 	}
 
     /// <summary>
@@ -110,6 +117,7 @@ public class DataBase : MonoBehaviour
     /// </summary>
     public void RemoveEnemies(IEnumerable<EnemyController> enemies)
     {
+	    foreach (var enemyController in enemies) enemiesBase.Remove(enemyController);
     }
 
     /// <summary>
@@ -119,7 +127,9 @@ public class DataBase : MonoBehaviour
     /// <returns>Коллекция типовых противников</returns>
     public IEnumerable<EnemyController> GetAllEnemiesByType(EnemyType type)
     {
-	}
+	    var allEnemies = enemiesBase.Where(e => e.Type == type);
+	    return allEnemies;
+    }
 
     /// <summary>
     /// Поиск самого ближайшего противника к юниту
@@ -128,7 +138,7 @@ public class DataBase : MonoBehaviour
     /// <returns>Искомый противник</returns>
     public EnemyController GetNearestEnemy(Controller unit)
     {
-	}
+    }
 
     /// <summary>
     /// Поиск всех противников в радиусе вокруг юнита
@@ -292,7 +302,7 @@ public class DataBase : MonoBehaviour
     /// <returns>Умещается-ли в сумку предмет</returns>
     public bool AddItem(Item item)
     {
-	}
+    }
 
     /// <summary>
     /// Добавляем в сумку персонажу предметы
